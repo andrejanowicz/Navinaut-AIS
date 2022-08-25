@@ -17,17 +17,16 @@
 #include "LED.h"
 #include "List.h"
 
-const char MODEL[] = "NAVINAUT-AIS-";
-const char *PASSWORD = "NAVINAUT";
+const char* DEVICE = "NAVINAUT-AIS-";
+const char* PASSWORD = "NAVINAUT";
 
 IPAddress Ip(192, 168, 15, 1);
 IPAddress NMask(255, 255, 255, 0);
 
-const char *BROADCAST_ADDR = "192.168.15.255";
+const char* BROADCAST_ADDR = "192.168.15.255";
 const int UDP_PORT = 2000;
 const int TCP_PORT = 2222;
 
-uint64_t chipid;
 char friendly_name[22];
 bool AP_started = false;
 const size_t MAX_CLIENTS = 2;
@@ -42,8 +41,8 @@ WiFiServer server(TCP_PORT, MAX_CLIENTS);
 
 void set_friendly_name() {
   
-  chipid = ESP.getEfuseMac();
-  strcpy(friendly_name, MODEL);
+  uint64_t chipid = ESP.getEfuseMac();
+  strcpy(friendly_name, DEVICE);
   sprintf(friendly_name, "%s%04X", friendly_name, (uint16_t)(chipid >> 32));
 }
 
@@ -86,7 +85,7 @@ void StopClient(LinkedList<tWiFiClientPtr>::iterator &it) {
 
 }
 
-void wifi_handle() {
+void WiFi_handle() {
   
   WiFiClient client = server.available();   // listen for incoming clients
 
@@ -126,7 +125,7 @@ void TCP_IP_send_NMEA(char* message) {
 }
 
 
-void wifi_setup() {
+void WiFi_setup() {
 
   WiFi.onEvent(OnWiFiEvent);
 

@@ -53,18 +53,17 @@ void IRAM_ATTR fifo_write_byte(uint8_t data)
 {
   // add byte to the incoming packet
   FIFO_PTR_TYPE position = (fifo_packets[fifo_packet_in] + fifo_bytes_in) & FIFO_BUFFER_MASK;   // calculate position in buffer
-  fifo_buffer[position] = data;         // store byte at position
+  fifo_buffer[position] = data;   // store byte at position
   fifo_bytes_in++;                // increase byte counter
 }
 
-void fifo_commit_packet(void)
+void IRAM_ATTR fifo_commit_packet(void)
 {
-  //DEBUG.println("commit packet.");
   // complete incoming packet by advancing to next slot in FIFO
   FIFO_PTR_TYPE new_position = (fifo_packets[fifo_packet_in] + fifo_bytes_in) & FIFO_BUFFER_MASK; // calculate position in buffer for next packet
   fifo_packet_in = (fifo_packet_in + 1) & FIFO_PACKET_MASK;
   fifo_packets[fifo_packet_in] = new_position;  // store new position in packet table
-  fifo_bytes_in = 0;                // reset offset to be ready to store data
+  fifo_bytes_in = 0;                            // reset offset to be ready to store data
 }
 
 uint16_t fifo_get_packet(void)

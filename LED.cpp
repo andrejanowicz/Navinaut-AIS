@@ -17,9 +17,7 @@
 #include "wireless.h"
 
 uint32_t last_tick = 0;
-
 bool AIS_flash_pending = false;
-
 uint32_t AIS_LED_start = 0;
 uint8_t LED_pulse_length = 50;
 
@@ -48,7 +46,6 @@ void LED_power_cycle(void) {
   digitalWrite(PWR_LED, LOW);
   digitalWrite(CONNECTION_LED, LOW);
   delay(LED_pulse_length);
-
 }
 
 void LED_handle(void) {

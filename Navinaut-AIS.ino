@@ -22,14 +22,14 @@
 
 void send_NMEA_sample_data() {
   
-  // send NMEA test string after startup. Helps users to setup system at home. Stop when receiving actual data
-
-  char NMEA_sample[] = "!AIVDM,1,1,,A,B39E<ih0087w;I7FGR7Q3wTUoP06,0*62";
-  static int16_t test_duration = 180; // first 180 seconds after startup a test signal is sent on all available connections
-  static uint32_t latest_sample_sent = 0;
-  const uint8_t TEST_SIGNAL_DELTA = 10;
+  // send NMEA test string after startup. Helps users to setup system at home.
   
-  if (received_NMEA_package || (test_duration < 0)  ||  millis() - latest_sample_sent < TEST_SIGNAL_DELTA * 1000){
+  char NMEA_sample[] = "!AIVDM,1,1,,A,B39E<ih0087w;I7FGR7Q3wTUoP06,0*62";
+  static int16_t test_period = 180; // first 180 seconds after startup a test signal is sent on all available interfaces
+  static uint32_t timestamp_latest_sample = 0;
+  const uint8_t TEST_SIGNAL_DELTA = 10; // seconds
+  
+  if ( !test_period || (millis() - timestamp_latest_sample < TEST_SIGNAL_DELTA * 1000 )){
     return;
   }
 
@@ -41,8 +41,9 @@ void send_NMEA_sample_data() {
   BLE_send_NMEA(NMEA_sample);
   TCP_IP_send_NMEA(NMEA_sample);
     
-  test_duration -= TEST_SIGNAL_DELTA;
-  latest_sample_sent = millis();
+  test_period -= TEST_SIGNAL_DELTA;
+  timestamp_latest_sample = millis();
+  
   AIS_flash_pending = true;
 }
 
@@ -61,7 +62,7 @@ void setup() {
   LED_power_cycle();
 
   DEBUG.print("WiFi setup:\t");
-  wifi_setup();
+  WiFi_setup();
   DEBUG.println("done.");
 
   DEBUG.print("BLE setup:\t");
@@ -97,13 +98,16 @@ void setup() {
 
 void loop() {
   // loops every ~50us / 20kHz
-
-  send_NMEA_sample_data();
+  
+  if (!received_NMEA_package){ 
+    // only send samples when we haven´t received actual data
+    send_NMEA_sample_data();
+  }
   
   packet_handle();
   nmea_process_packet();
   fifo_remove_packet();
-  wifi_handle();
+  WiFi_handle();
   LED_handle();
 
 }

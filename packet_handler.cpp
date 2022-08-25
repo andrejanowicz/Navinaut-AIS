@@ -114,7 +114,6 @@ void IRAM_ATTR packet_handle(){
 
     // STATE: RESET
     case PH_STATE_RESET:                  // state: reset, prepare state machine for next packet
-      //DEBUG.print("PH_STATE_RESET, ");
 
       rx_bitstream &= 8000;               // reset bit-stream (but don't throw away incoming bit)
       rx_bit_count = 0;                   // reset bit counter
@@ -284,8 +283,8 @@ void IRAM_ATTR packet_handle(){
 // stop receiving and processing packets
 void ph_stop(void)
 {
-  //  PH_DATA_IE &= ~PH_DATA_CLK_PIN;       // disable interrupt on pin wired to GPIO2
-  ph_state = PH_STATE_OFF;          // turn off packet handler state machine
+  detachInterrupt(digitalPinToInterrupt(PH_DATA_CLK_PIN));  // disable interrupt on pin wired to GPIO2
+  ph_state = PH_STATE_OFF;                  // turn off packet handler state machine
 
   // ISR is no longer invoked, it's now save to do radio operations
 

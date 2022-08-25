@@ -16,16 +16,14 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-extern const char MODEL[];
 extern uint64_t chipid;  
 extern char friendly_name[22];
-extern const char *password;
 extern uint8_t wireless_has_clients;
 void set_friendly_name();
 void UDP_send_NMEA(char* message);
 void TCP_IP_send_NMEA(char* message);
 
-void wifi_setup();
-void wifi_handle();
+void WiFi_setup();
+void WiFi_handle();
 
 #endif /* WIRELESS_H_ */
