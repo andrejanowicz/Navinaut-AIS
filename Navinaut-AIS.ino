@@ -22,26 +22,27 @@
 
 void send_NMEA_sample_data() {
   
-  // send NMEA test string after startup. Helps users to setup system at home.
+  // send NMEA samples until actual data is received. Helps to setup system at home.
+  // Long:      6.97928333333333
+  // Lat:       51.376695
+  // Location:  Essen, Germany
   
-  char NMEA_sample[] = "!AIVDM,1,1,,A,B39E<ih0087w;I7FGR7Q3wTUoP06,0*62";
-  static int16_t test_period = 180; // first 180 seconds after startup a test signal is sent on all available interfaces
+  char NMEA_sample[] = "!AIVDM,1,1,,A,B39E<ih0087w;I7FGR7Q3wTUoP06,0*62\r\n";
   static uint32_t timestamp_latest_sample = 0;
   const uint8_t TEST_SIGNAL_DELTA = 10; // seconds
   
-  if ( !test_period || (millis() - timestamp_latest_sample < TEST_SIGNAL_DELTA * 1000 )){
+  if ((millis() - timestamp_latest_sample < TEST_SIGNAL_DELTA * 1000 )){
     return;
   }
 
   DEBUG.print("Sending sample NMEA string:\t");
-  DEBUG.println(NMEA_sample);
+  DEBUG.print(NMEA_sample);
 
-  NMEA_0183_HS.println(NMEA_sample);
+  NMEA_0183_HS.print(NMEA_sample);
   UDP_send_NMEA(NMEA_sample);
   BLE_send_NMEA(NMEA_sample);
   TCP_IP_send_NMEA(NMEA_sample);
     
-  test_period -= TEST_SIGNAL_DELTA;
   timestamp_latest_sample = millis();
   
   AIS_flash_pending = true;
@@ -99,8 +100,8 @@ void setup() {
 void loop() {
   // loops every ~50us / 20kHz
   
-  if (!received_NMEA_package){ 
-    // only send samples when we haven´t received actual data
+  if (!received_NMEA_success){ 
+    // only send samples if we haven´t received actual data
     send_NMEA_sample_data();
   }
   
