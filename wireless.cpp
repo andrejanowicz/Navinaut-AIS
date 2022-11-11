@@ -119,7 +119,7 @@ void TCP_IP_send_NMEA(char* message) {
 
   for (auto it = clients.begin() ; it != clients.end(); it++) {
     if ( (*it) != NULL && (*it)->connected() ) {
-      (*it)->println(message);
+      (*it)->print(message);
     }
   }
 }
@@ -149,4 +149,5 @@ void WiFi_setup() {
   DEBUG.print(":");
   DEBUG.print(TCP_PORT);
   DEBUG.print("\t");
+  server.begin();
 }
