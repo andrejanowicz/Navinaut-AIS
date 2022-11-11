@@ -24,7 +24,7 @@ uint8_t nmea_push_packet(uint8_t packet_size);
 #define NMEA_AIS_BITS (NMEA_MAX_AIS_PAYLOAD * 8)
 #define NMEA_AIS_BITS_ENCODED ((NMEA_AIS_BITS + 5) / 6)
 
-const char nmea_lead[] = "!AIVDM,";   // static start of NMEA sentence
+const char NMEA_LEAD[] = "!AIVDM,";   // static start of NMEA sentence
 char nmea_buffer[8 + NMEA_AIS_BITS_ENCODED + 5 + 1]; // buffer for dynamic part of NMEA sentence
 // fragment and channel info, AIS payload, stuff-bit and crc, 0-termination
 uint8_t nmea_buffer_index;        // current buffer position
@@ -34,25 +34,23 @@ uint8_t nmea_crc;           // calculated CRC
 
 uint8_t nmea_message_id = 0;      // sequential message id for multi-sentence message
 
-const char nmea_hex[] = { '0', '1', '2', '3',   // lookup table for hex conversion of CRC
+const char NMEA_HEX[] = { '0', '1', '2', '3',   // lookup table for hex conversion of CRC
                           '4', '5', '6', '7',
                           '8', '9', 'A', 'B',
                           'C', 'D', 'E', 'F'
                         };
 
-//const char delimiter[] = "\n";   // 0x0A LF
 const uint8_t NMEA_MAX_LENGTH = 90;
 char NMEA_message[NMEA_MAX_LENGTH];
 
-const char delimiter[] = "\n";   // 0x0A LF
+const char DELIMITER[] = "\r\n";   // <CR><LF>
 char* ais;
 const uint8_t BLE_MTU = 20;
 uint8_t nmea_len = 0;
 uint8_t packets = 0;
 uint8_t rem = 0;
 char fragment[BLE_MTU + 1];
-uint8_t ais_counter = 0;
-bool received_NMEA_package = false;
+bool received_NMEA_success = false;
 
 
 // process AIS next packet in FIFO and transmit as NMEA sentence(s) through UART
@@ -129,23 +127,24 @@ void nmea_process_packet(void)
     // write CRC
     uint8_t final_crc = nmea_crc;   // copy CRC as push_char will modify it
     nmea_push_char('*');
-    nmea_push_char(nmea_hex[final_crc >> 4]);
-    nmea_push_char(nmea_hex[final_crc & 0x0f]);
+    nmea_push_char(NMEA_HEX[final_crc >> 4]);
+    nmea_push_char(NMEA_HEX[final_crc & 0x0f]);
 
     // terminate message with 0
 
     nmea_push_char(0);
 
-    strcpy (NMEA_message, nmea_lead);
+    strcpy (NMEA_message, NMEA_LEAD);
     strcat(NMEA_message, nmea_buffer);
+    strcat(NMEA_message, DELIMITER);
 
-    NMEA_0183_HS.println(NMEA_message);
+    NMEA_0183_HS.print(NMEA_message);
     BLE_send_NMEA(NMEA_message);
     UDP_send_NMEA(NMEA_message);
     TCP_IP_send_NMEA(NMEA_message);
   
     AIS_flash_pending = true;
-    received_NMEA_package = true;
+    received_NMEA_success = true;
   }
 }
 
