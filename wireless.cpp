@@ -3,7 +3,7 @@
  * Code:  https://github.com/andrejanowicz/Navinaut-AIS
  * Shop:  https://navinaut-ais.de/
  * 
- * Author:  Andre Janowicz, <andre.janowicz@gmail.com>
+ * Author:  Andre Janowicz, <aj@main-void.de>
  * License: GPLV2
  *          
  */

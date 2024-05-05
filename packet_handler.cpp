@@ -5,7 +5,7 @@
  *          https://creativecommons.org/licenses/by-sa/4.0/
  *          Please contact the author if you want to use this work in a closed-source project
  *          
- *  Modified and ported to ESP32 Arduino by Andre Janowicz - <andre.janowicz@gmail.com>
+ *  Modified and ported to ESP32 Arduino by Andre Janowicz - <aj@main-void.de>
  *  github.com/andrejanowicz/Navinaut-AIS
  */
 
