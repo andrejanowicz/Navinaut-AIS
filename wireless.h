@@ -17,7 +17,7 @@
 #include <stdint.h>
 
 extern uint64_t chipid;  
-extern char friendly_name[22];
+extern char unique_friendly_name[22];
 extern uint8_t wireless_has_clients;
 void set_friendly_name();
 void UDP_send_NMEA(char* message);

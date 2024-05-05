@@ -28,7 +28,7 @@ BLECharacteristic *pCharacteristic;
 void BLE_setup(void)
 {
 
-  BLEDevice::init(friendly_name);
+  BLEDevice::init(unique_friendly_name);
 
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);

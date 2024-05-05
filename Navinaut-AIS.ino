@@ -55,7 +55,7 @@ void setup() {
   set_friendly_name();
 
   DEBUG.println("####### RESTART #######");
-  DEBUG.print(friendly_name);
+  DEBUG.print(unique_friendly_name);
   DEBUG.print(" build date: ");
   DEBUG.println(__DATE__);
 
