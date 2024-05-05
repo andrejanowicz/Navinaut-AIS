@@ -17,7 +17,7 @@
 #include "LED.h"
 #include "List.h"
 
-const char* DEVICE = "NAVINAUT-AIS-";
+const char* FRIENDLY_NAME = "NAVINAUT-AIS-";
 const char* PASSWORD = "NAVINAUT";
 
 IPAddress Ip(192, 168, 15, 1);
@@ -27,7 +27,7 @@ const char* BROADCAST_ADDR = "192.168.15.255";
 const int UDP_PORT = 2000;
 const int TCP_PORT = 2222;
 
-char friendly_name[22];
+char unique_friendly_name[22];
 bool AP_started = false;
 const size_t MAX_CLIENTS = 2;
 uint8_t wireless_has_clients;
@@ -42,8 +42,8 @@ WiFiServer server(TCP_PORT, MAX_CLIENTS);
 void set_friendly_name() {
   
   uint64_t chipid = ESP.getEfuseMac();
-  strcpy(friendly_name, DEVICE);
-  sprintf(friendly_name, "%s%04X", friendly_name, (uint16_t)(chipid >> 32));
+  strcpy(unique_friendly_name, FRIENDLY_NAME);
+  sprintf(unique_friendly_name, "%s%04X", FRIENDLY_NAME, (uint16_t)(chipid >> 32));
 }
 
 void OnWiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info){
@@ -129,7 +129,7 @@ void WiFi_setup() {
   WiFi.onEvent(OnWiFiEvent);
 
   WiFi.mode(WIFI_AP);
-  WiFi.softAP(friendly_name, PASSWORD);
+  WiFi.softAP(unique_friendly_name, PASSWORD);
 
   while (!AP_started) {
     LED_PWR_error_flash();
