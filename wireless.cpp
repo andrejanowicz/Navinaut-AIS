@@ -46,28 +46,27 @@ void set_friendly_name() {
   sprintf(friendly_name, "%s%04X", friendly_name, (uint16_t)(chipid >> 32));
 }
 
-void OnWiFiEvent(WiFiEvent_t event){
-
+void OnWiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info){
   switch (event) {
-    case SYSTEM_EVENT_STA_CONNECTED:
-      DEBUG.println("Connected to WiFi Network.\t");
-      break;
-    case SYSTEM_EVENT_AP_START:
+   case WiFiEvent_t::ARDUINO_EVENT_WIFI_READY:
       DEBUG.print("soft AP started.\t");
       AP_started = true;
       break;
-    case SYSTEM_EVENT_AP_STACONNECTED:
+    case WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_START:
+      break;
+    case WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STACONNECTED:
       wireless_has_clients = WiFi.softAPgetStationNum();
       DEBUG.println("soft AP client connected.\t");
       break;
-    case SYSTEM_EVENT_AP_STADISCONNECTED:
+    case WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STADISCONNECTED:
       DEBUG.println("soft AP client disconnected.\t");
       wireless_has_clients = WiFi.softAPgetStationNum();
       break;
-    default: 
+    default:
       break;
   }
 }
+
 
 void AddClient(WiFiClient &client) {
   
